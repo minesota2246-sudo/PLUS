@@ -1,0 +1,29 @@
+name: Plus-T Daily Analysis
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v3
+
+      - name: 파이썬 설정
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: 라이브러리 설치
+        run: |
+          pip install -r requirements.txt
+
+      - name: 엔진 가동
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python db_worker_am.py
